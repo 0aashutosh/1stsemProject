@@ -697,17 +697,17 @@ void bookarena()
  	FILE *fptr;
  	FILE *p;//to check time and date of booking !
 	int cnt=0,i=0,total=0;
-	fptr = fopen("owner.txt", "r");
+	/*fptr = fopen("owner.txt", "r");
     if (fptr == NULL) {
         printf("Error opening file!");
         exit(0);
-    }
+    }*/
     book:
     system("cls");
     printf("\n\n\t\t\t\t\tBOOKING ARENA\n\n");
     printf("----------------------------------------------------------------------------------------------------------------------\n");
     fflush(stdin); 
-    fread(&owner,sizeof(struct signup),1,fptr);
+//    fread(&owner,sizeof(struct signup),1,fptr);
     printf("Enter how many times you want to book: ");
     scanf("%d",&cnt);
     if(cnt>3)
@@ -745,11 +745,11 @@ void bookarena()
 		}
     	
 		p = fopen("bookings.txt", "r");
-    	if (p == NULL) 
+    /*	if (p == NULL) 
 		{
     	    printf("Error opening file!");
     	    exit(0);
-    	}
+    	}*/
     	while(fread(&bookck,sizeof(struct booking),1,p)==1)
     	{
     		if(book.date==bookck.date && book.time==bookck.time)
@@ -762,7 +762,7 @@ void bookarena()
 		fclose(p);
 		
 		strcpy(book.username, users.username);
-    	fp = fopen("bookings.txt", "a");
+    	fp = fopen("bookings.txt", "a+");
     	if (fp == NULL) 
 		{
     	    printf("Error opening file!");
@@ -770,11 +770,10 @@ void bookarena()
     	}
     	fwrite(&book, sizeof(struct booking), 1, fp);
 	}
+	fclose(fp);
     total=cnt*1200;
 	printf("Booking successful!\n");
     printf("Your total is %d",total);
-    
-    fclose(fp);
     getch();
 	
 }
