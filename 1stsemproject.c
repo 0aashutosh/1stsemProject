@@ -30,31 +30,35 @@ struct report{
 	char report[150];
 }r;
 
-void userMenu();
+int userMenu();
 void report();
 void bookarena();
-void logout();
-
+int logout();
+int adminMenu();
 
 	
 void loading()
 {
-	printf("Loading");
-	Sleep(1000);
+	printf("\n\nLoading");
+//	Sleep(1000);
 	printf("");
-	Sleep(1000);
+	Sleep(500);
 	printf(".");
-	Sleep(1000);
+	Sleep(500);
 	printf(".");
-	Sleep(1000);
+	Sleep(500);
+	printf(".");
+	Sleep(500);
+	printf(".");
+	Sleep(500);
 }
 
-void logout()
+int logout()
 {
 	system("cls");
 	printf("\n\n\t\t\t\tYou have been logout");
 	getch();
-//	main();
+	main();
 }
 void view_bookings() {
     FILE *fp;
@@ -172,7 +176,7 @@ void manageprofile(struct signup *user)
     getch();
 }
 
-void adminMenu()
+int adminMenu()
 {
 	int choice=0;
     FILE *fp;
@@ -211,10 +215,11 @@ void adminMenu()
             break;
 
         case 3:
-            fclose(fp);
-			logout();
-			
-			main();
+        	loading();
+            system("cls");
+			printf("\n\n\t\t\t\tYou have been logout");
+			getch();
+			return 1;	
 			break;
 
         default:
@@ -225,7 +230,7 @@ void adminMenu()
 }
 int main()
 {
-	int role=0,choice=0;
+	int role=0,choice=0,log=0;
 	int flag=0,key=0;
 	FILE *p;
 	struct signup user, admin1;
@@ -410,7 +415,13 @@ int main()
 							printf("Login successful");
 							getch();
 							fclose(ptr);
-							userMenu();
+							
+							log=userMenu();
+							if(log==1)
+							{
+								loading();
+								goto menu;
+							}
 							break;
 						}	
 					}
@@ -514,7 +525,13 @@ int main()
 						printf("Login successful");
 						getch();
 						fclose(ptr);
-						adminMenu();
+						loading();
+						log=adminMenu();
+						if(log==1)
+						{
+							
+							goto menu;
+						}
 						break;
 					}	
 				}
@@ -605,25 +622,25 @@ int main()
 			getch();
 			goto menu;			
 	}
-	if(role==1)
+/*	if(role==1)
 	{
 		adminMenu();
 	}
 	if(role==2)
 	{
-//		user();
+		userMenu();
 	}
 	if(role==3)
 	{
 		goto menu;
-	}
+	}*/
 	return 0;
 }
 
 
 
 
-void userMenu()
+int userMenu()
 {
 	int choice=0;
 	FILE *fp;
@@ -660,10 +677,11 @@ void userMenu()
 			goto usermenu;
 			
 		case 4:
-			fclose(fp);
-			logout();
-			
-			main();
+			loading();
+			system("cls");
+			printf("\n\n\t\t\t\tYou have been logout");
+			getch();
+			return 1;	
 			break;
 			
 		default :
