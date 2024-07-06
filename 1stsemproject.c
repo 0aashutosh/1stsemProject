@@ -19,8 +19,6 @@ struct admin{
 
 };
       
-
-
 struct booking{
 	int time;
 	int date;
@@ -605,7 +603,7 @@ int main()
 	}
 	if(role==1)
 	{
-		admin();
+		adminMenu();
 	}
 	if(role==2)
 	{
