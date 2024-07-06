@@ -211,7 +211,11 @@ void adminMenu()
             break;
 
         case 3:
-            return;
+            fclose(fp);
+			logout();
+			
+			main();
+			break;
 
         default:
             printf("Invalid input! Please enter input among choices!\n");
