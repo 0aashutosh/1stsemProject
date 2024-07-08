@@ -272,7 +272,10 @@ int adminMenu()
     }
 }
 int main()
+
 {
+	FILE *fp;
+//	char ckpass[50];
 	int role=0,choice=0,log=0;
 	int flag=0,key=0;
 	FILE *p;
@@ -303,119 +306,122 @@ int main()
 			printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
 			printf("\n\t\t\t\t\t\tEnter your role: ");
 			scanf("%d",&role);
-			if(role==2)
+			switch(role)
 			{
-				FILE *fp;
-				signupmenu:
-				system("cls");
-				printf("\n\n\t\t\t\t\t\t\t\tSIGNUP FORM FOR CUSTOMER\n\n");
-				printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
-				fflush(stdin);
-				printf("\n\n\t\t\t\t\tEnter your full name: ");
-				gets(users.fullname);
-				fflush(stdin);
-				printf("\t\t\t\t\tEnter username: ");
-				gets(users.username);
-				fflush(stdin);
-				printf("\t\t\t\t\tEnter password: ");
-				gets(users.password);
-				fflush(stdin);
-				printf("\t\t\t\t\tEnter confirmation password: ");
-				gets(ckpass);
-				if(strcmp(ckpass,users.password)!=0)
-				{
-					printf("Both password should match!");
+				case 2:
+					
+//					FILE *fp;
+					signupmenu:
+					system("cls");
+					printf("\n\n\t\t\t\t\t\t\t\tSIGNUP FORM FOR CUSTOMER\n\n");
+					printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
+					fflush(stdin);
+					printf("\n\n\t\t\t\t\tEnter your full name: ");
+					gets(users.fullname);
+					fflush(stdin);
+					printf("\t\t\t\t\tEnter username: ");
+					gets(users.username);
+					fflush(stdin);
+					printf("\t\t\t\t\tEnter password: ");
+					gets(users.password);
+					fflush(stdin);
+					printf("\t\t\t\t\tEnter confirmation password: ");
+					gets(ckpass);
+					if(strcmp(ckpass,users.password)!=0)
+					{
+						printf("Both password should match!");
+						getch();
+						goto signupmenu;
+					}
+					fflush(stdin);
+					printf("\t\t\t\t\tEnter contact number: ");
+					scanf("%lld",&users.contactnumber);
+					if(users.contactnumber < 9700000000 || users.contactnumber > 9899999999)
+					{
+						printf("\n\n\t\t\t\tContact length is not correct!");
 					getch();
 					goto signupmenu;
-				}
-				fflush(stdin);
-				printf("\t\t\t\t\tEnter contact number: ");
-				scanf("%lld",&users.contactnumber);
-				if(users.contactnumber < 9700000000 || users.contactnumber > 9899999999)
-				{
-					printf("\n\n\t\t\t\tContact length is not correct!");
+					}
+					fflush(stdin);
+					printf("\t\t\t\t\tEnter your passkey (NOTE : REMEMBER TO KEEP THIS SAFE): ");
+					scanf("%d",&users.passkey);
+	
+					fp=fopen("users.txt","a");
+					if(fp==NULL)
+					{
+						printf("Error!");
+						exit(0);
+					}
+					fwrite(&users,sizeof(struct signup),1,fp);
+					printf("\n\n--------------------------------------------------------------------------------------------------------------------------------");
+					printf("\n\n\t\t\t\tSignup sucessfull: ");
+					fclose(fp);
+					break;
+				
+	
+				case 1:
+//		struct signup owner;		
+					signupmenu1:
+					system("cls");
+					printf("\n\n\t\t\t\t\tSIGNUP FORM FOR ADMIN\n\n");
+					printf("----------------------------------------------------------------------------------------------------------------------\n\n");
+					fflush(stdin);
+					printf("Enter your full name: ");
+					gets(owner.fullname);
+					fflush(stdin);
+					printf("\nEnter username: ");
+					gets(owner.username);
+					fflush(stdin);
+					printf("Enter password: ");
+					
+					gets(owner.password);
+					fflush(stdin);
+					printf("Enter confirmation password: ");
+					gets(ckpass);
+					if(strcmp(ckpass,owner.password)!=0)
+					{
+						printf("Both password should match!");
+						getch();
+						goto signupmenu1;
+					}
+					fflush(stdin);
+					printf("Enter conntact number: ");
+					scanf("%lld",&owner.contactnumber);
+					if(owner.contactnumber < 9700000000 || owner.contactnumber > 9899999999)
+					{	
+						printf("Contact length is not correct!");
+						getch();
+						goto signupmenu1;
+					}	
+					printf("\nEnter esewa number: ");
+					scanf("%lld",&owner.esewa_no);
+					fflush(stdin);
+					printf("Enter your passkey (NOTE : REMEMBER TO KEEP THIS SAFE): ");
+					scanf("%d",&owner.passkey);
+		
+					fp=fopen("owner.txt","a");
+					if(fp==NULL)
+					{
+						printf("Error!");
+						exit(0);
+					}
+					fwrite(&owner,sizeof(struct signup),1,fp);
+					printf("----------------------------------------------------------------------------------------------------------------------");
+		
+					printf("\n\n\n\t\t\tSignup sucessfull\t\t\t\n\n\n ");
+					printf("----------------------------------------------------------------------------------------------------------------------");
 					getch();
-					goto signupmenu;
-				}
-				fflush(stdin);
-				printf("\t\t\t\t\tEnter your passkey (NOTE : REMEMBER TO KEEP THIS SAFE): ");
-				scanf("%d",&users.passkey);
-	
-				fp=fopen("users.txt","a");
-				if(fp==NULL)
-				{
-					printf("Error!");
-					exit(0);
-				}
-				fwrite(&users,sizeof(struct signup),1,fp);
-				printf("\n\n--------------------------------------------------------------------------------------------------------------------------------");
-				printf("\n\n\t\t\t\tSignup sucessfull: ");
-				fclose(fp);
-			}
-	
-			if(role==1)
-			{
-//		struct signup owner;
-				FILE *fp;
-				char ckpass[50];
-				signupmenu1:
-				system("cls");
-				printf("\n\n\t\t\t\t\tSIGNUP FORM FOR ADMIN\n\n");
-				printf("----------------------------------------------------------------------------------------------------------------------\n\n");
-				fflush(stdin);
-				printf("Enter your full name: ");
-				gets(owner.fullname);
-				fflush(stdin);
-				printf("\nEnter username: ");
-				gets(owner.username);
-				fflush(stdin);
-				printf("Enter password: ");
-				gets(owner.password);
-				fflush(stdin);
-				printf("Enter confirmation password: ");
-				gets(ckpass);
-				if(strcmp(ckpass,owner.password)!=0)
-				{
-					printf("Both password should match!");
+					fclose(fp);
+					break;
+				
+				default:
+					printf("Invalid input! Please enter input among choices!");
+					fflush(stdin);
 					getch();
-					goto signupmenu1;
-				}
-				fflush(stdin);
-				printf("Enter conntact number: ");
-				scanf("%lld",&owner.contactnumber);
-				if(owner.contactnumber < 9700000000 || owner.contactnumber > 9899999999)
-				{	
-					printf("Contact length is not correct!");
-					getch();
-					goto signupmenu1;
-				}	
-				printf("\nEnter esewa number: ");
-				scanf("%lld",&owner.esewa_no);
-				fflush(stdin);
-				printf("Enter your passkey (NOTE : REMEMBER TO KEEP THIS SAFE): ");
-				scanf("%d",&owner.passkey);
-	
-				fp=fopen("owner.txt","a");
-				if(fp==NULL)
-				{
-					printf("Error!");
-					exit(0);
-				}
-				fwrite(&owner,sizeof(struct signup),1,fp);
-				printf("----------------------------------------------------------------------------------------------------------------------");
-	
-				printf("\n\n\n\t\t\tSignup sucessfull\t\t\t\n\n\n ");
-				printf("----------------------------------------------------------------------------------------------------------------------");
-				getch();
-				fclose(fp);
+					system("cls");
+					goto re;	
 			}	
-			if(role!=1 && role!=2)
-			{
-				printf("Invalid input");
-				getch();
-				system("cls");
-				goto re;
-			}
+			
 			goto menu;
 			break;
 		
@@ -429,18 +435,20 @@ int main()
 			printf("----------------------------------------------------------------------------------------------------------------------");
 			printf("\n\t\t\t\t\tEnter your role: ");
 			scanf("%d",&role);
-			if(role==2)
+			switch(role)
 			{
-				ptr=fopen("users.txt","r");
-				if(ptr==NULL)
-				{
-					printf("Error!");
-						exit(0);
-				}
-				system("cls");
-				main2:
+				case 2:
+					
+					ptr=fopen("users.txt","r");
+					if(ptr==NULL)
+					{
+						printf("Error!");
+							exit(0);
+					}
+					system("cls");
+					main2:
 			
-				fflush(stdin);
+					fflush(stdin);
 				
 				
 					printf("\n\n\t\t\t\t\tLOGIN FORM FOR USERS\n\n");
@@ -534,50 +542,46 @@ int main()
                         		goto there;
 						}
 						
-					}
-						
-						
-					
-			
-			}
-			if(role==1)
-			{
 				
-				count=0;
-				ptr=fopen("owner.txt","r");
-				if(ptr==NULL)
-				{
-					printf("Error!");
-				exit(0);
-				}
-				system("cls");
-				main3:
-				printf("\n\n\t\t\t\t\tLOGIN FORM FOR ADMIN\n\n");
-				printf("----------------------------------------------------------------------------------------------------------------------");
-				fflush(stdin);
-				printf("\nEnter username: ");
-				gets(ckusername);
-				fflush(stdin);
-				printf("\nEnter password: ");
-				gets(ckpass);
-				while(fread(&owner,sizeof(struct signup),1,ptr)==1)
-				{
-					if(strcmp(owner.username,ckusername)==0 && strcmp(owner.password,ckpass)==0)
+					}
+					break;
+					
+				case 1:	
+					count=0;
+					ptr=fopen("owner.txt","r");
+					if(ptr==NULL)
 					{
-						flag=1;
-						printf("Login successful");
-						getch();
-						fclose(ptr);
-						loading();
-						log=adminMenu();
-						if(log==1)
+						printf("Error!");
+						exit(0);
+					}
+					system("cls");
+					main3:
+					printf("\n\n\t\t\t\t\tLOGIN FORM FOR ADMIN\n\n");
+					printf("----------------------------------------------------------------------------------------------------------------------");
+					fflush(stdin);
+					printf("\nEnter username: ");
+					gets(ckusername);
+					fflush(stdin);
+					printf("\nEnter password: ");
+					gets(ckpass);
+					while(fread(&owner,sizeof(struct signup),1,ptr)==1)
+					{
+						if(strcmp(owner.username,ckusername)==0 && strcmp(owner.password,ckpass)==0)
 						{
-							goto menu;
-						}
-						break;
-					}	
-				}
-				if(!flag)
+							flag=1;
+							printf("Login successful");
+							getch();
+							fclose(ptr);
+							loading();
+							log=adminMenu();
+							if(log==1)
+							{
+								goto menu;
+							}
+							break;
+						}	
+					}
+					if(!flag)
 					{
 						count++;
 						printf("Incorrect password   ");
@@ -590,7 +594,7 @@ int main()
 						printf("\n\nTry again");
 						system("cls");
 						goto main3;
-					}
+					}	
 					there1:
 					while(count>3)
 					{
@@ -608,43 +612,50 @@ int main()
 								printf("\nEnter username: ");
 								gets(ckusername);
 								p = fopen("owner.txt", "r+");
-                        		if (p == NULL)
-	                        	{
-    	                        	printf("\n\nNo File Detected");
-	        	                    break;
-    	        	            }
-        	        	        while (fread(&owner, sizeof(struct signup), 1, p)==1)
-            	        	    {
-                	        	    if (strcmp(owner.username, ckusername) == 0 && key==owner.passkey)
-                    	        	{
-                        	    		fflush(stdin);
-	                        	        printf("\nEnter New Password:");
-//  	                              inputpass(login.password); // SEEK_SET for beginning of the file, SEEK_END end of file
+            	           		if (p == NULL)
+	            	           	{
+    	            	           	printf("\n\nNo File Detected");
+	        	       	            break;
+    	        	       	    }
+        	       	        	while (fread(&owner, sizeof(struct signup), 1, p)==1)
+	           	        	    {	
+    	           	        	    if (strcmp(owner.username, ckusername) == 0 && key==owner.passkey)
+        	           	        	{
+           	            	    		fflush(stdin);
+	           	            	        printf("\nEnter New Password:");
+//  	            	                  inputpass(login.password); // SEEK_SET for beginning of the file, SEEK_END end of file
 										gets(owner.password);
-    	        	                    fseek(p, -(long)sizeof(struct signup), SEEK_CUR); // SEEK_CUR means current position
-        	        	                fwrite(&owner, sizeof(struct signup), 1, p);
-            	        	            printf("\nPassword changed successfully.");
-                	        	        fclose(p);
-                    	        	    goto end;
+    	                	            fseek(p, -(long)sizeof(struct signup), SEEK_CUR); // SEEK_CUR means current position
+        	       	        	        fwrite(&owner, sizeof(struct signup), 1, p);
+           	        	        	    printf("\nPassword changed successfully.");
+               	        	        	fclose(p);
+	                   	        	    goto end;
     	                	        }
-                        		}
-                        		printf("\n Incorrect Verifier Code.");
-        	             		fclose(p);
-            	        	    exit(0);
-            	        	    
-            	        	case 2:
-            	        		printf("\n Ok BYE BYE");
-                        		exit(0);
+       	                		}
+            	            	printf("\n Incorrect Verifier Code.");
+        	    	       		fclose(p);
+            	    	   	    exit(0);
+            	       		    break;
+            	        		
+            	       		case 2:
+            	       			printf("\n Ok BYE BYE");
+                       			exit(0);
                         		
-                        	default:
-                        		printf("Wrong input");
-                        		goto there1;
+                       		default:
+                       			printf("Wrong input");
+                       			goto there1;
 						}
 						
 					}
+					break;
+					
+				default:
+					printf("Invalid input! Please enter input among choices!");
+					fflush(stdin);
+					getch();
+					goto menu;	
 			}
-			
-	
+		
 			end:
 			break;
 			
