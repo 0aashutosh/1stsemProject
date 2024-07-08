@@ -255,6 +255,8 @@ int adminMenu()
             	printf("\n");
             	printf("\n----------------------------------------------------------------------------------------------------------------------\n\n");
 			}
+			getch();
+			goto ownermenu;
             break;
 
         case 3:
@@ -712,6 +714,7 @@ int userMenu()
 	{
 		case 1:
 			bookarena();
+			goto usermenu;
 			break;
 			
 		case 2:
@@ -845,7 +848,4 @@ void bookarena()
     getch();
 	
 }
-
-
-
 
