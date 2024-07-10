@@ -68,13 +68,15 @@ void view_bookings() {
     printf("----------------------------------------------------------------------------------------------------------------------\n");
 
     fp = fopen("bookings.txt", "r");
-    if (fp == NULL) {
+    if (fp == NULL) 
+	{
         printf("No bookings found!\n");
         getch();
         return;
     }
 
-    while (fread(&b, sizeof(struct booking), 1, fp) == 1) {
+    while (fread(&b, sizeof(struct booking), 1, fp) == 1) 
+	{
         printf("Username: %s\n", b.username);
         printf("Date: %02d\n", b.date);
         printf("Time: %02d\n", b.time);
@@ -118,7 +120,7 @@ void updatefile(struct signup *user)
     rename(tname, name);
 }
 
-void manageprofile(struct signup *user)
+void manageprofile(struct signup *user,int role)
 {
 	int choice=0;
     char newpassword[50];
@@ -150,14 +152,33 @@ void manageprofile(struct signup *user)
             }
             printf("\nEnter new password: ");
             gets(newpassword);
-
-            fp = fopen("users.txt", "r+");
-            if (fp == NULL) 
+			
+			
+			switch(role)
 			{
-                printf("Error opening file!");
-                exit(1);
-            }
-
+				case 1:
+					fp = fopen("owner.txt", "r+");
+    	    	    if (fp == NULL) 
+					{
+	            	    printf("Error opening file!");
+    	            	exit(1);
+        	    	}
+        	    	break;
+        	    	
+        	    case 2:
+        	    	fp = fopen("users.txt", "r+");
+    	        	if (fp == NULL) 
+					{
+            		    printf("Error opening file!");
+                		exit(1);
+            		}
+            		break;
+            		
+            	default:
+            		system("cls");
+            		printf("\n\n\n\t\t\tERROR IN SYSTEM!");
+            		exit(0);
+			}
             while (fread(&u, sizeof(struct signup), 1, fp) == 1) 
 			{
 			
@@ -221,7 +242,7 @@ void manageprofile(struct signup *user)
 
 int adminMenu()
 {
-	int choice=0;
+	int choice=0,role=1;
     FILE *fp;
 	ownermenu:
     system("cls");
@@ -229,7 +250,8 @@ int adminMenu()
     printf("----------------------------------------------------------------------------------------------------------------------\n");
     printf("\n\t\t1. View All Bookings");
     printf("\n\t\t2. View report");
-    printf("\n\t\t3. Logout");
+    printf("\n\t\t3. Manage profile");
+    printf("\n\t\t4. Logout");
     printf("\n\n\n\t\tEnter your choice: ");
     scanf("%d", &choice);
     fflush(stdin);
@@ -258,8 +280,13 @@ int adminMenu()
 			getch();
 			goto ownermenu;
             break;
-
+            
         case 3:
+        	manageprofile(&owner,role);
+			goto ownermenu;
+			break;
+
+        case 4:
         	loading();
             system("cls");
 			printf("\n\n\t\t\t\tYou have been logout");
@@ -303,10 +330,11 @@ int main()
 			system("cls");
 			re:
 			fflush(stdin);	
-			printf("\n\n\t\t\t\t\t\t\t\tSIGNUP\n\n\t--------------------------------------------------------------------------------------------------------------------------------------");
-			printf("\n\n\t\t\t\t\t\t\t1.ADMIN\t\t\t2.CUSTOMER\n\n");
+			printf("\n\n\t\t\t\t\tSIGNUP MENU\n\n");
 			printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
-			printf("\n\t\t\t\t\t\tEnter your role: ");
+			printf("\n\n\t\t\t1.ADMIN\t\t\t2.CUSTOMER\t\t\t3.Return\n\n\n\n");
+			printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
+			printf("\n\t\t\t\t\t\tEnter your choice: ");
 			scanf("%d",&role);
 			switch(role)
 			{
@@ -336,10 +364,11 @@ int main()
 						goto signupmenu;
 					}
 					fflush(stdin);
-					printf("\t\t\t\t\tEnter contact number: ");
+					printf("\t\t\t\t\tEnter contact number: %d",users.contactnumber);
 					scanf("%lld",&users.contactnumber);
 					if(users.contactnumber < 9700000000 || users.contactnumber > 9899999999)
 					{
+						users.contactnumber=0;
 						printf("\n\n\t\t\t\tContact length is not correct!");
 					getch();
 					goto signupmenu;
@@ -368,17 +397,17 @@ int main()
 					printf("\n\n\t\t\t\t\tSIGNUP FORM FOR ADMIN\n\n");
 					printf("----------------------------------------------------------------------------------------------------------------------\n\n");
 					fflush(stdin);
-					printf("Enter your full name: ");
+					printf("\n\n\t\t\t\t\tEnter your full name: ");
 					gets(owner.fullname);
 					fflush(stdin);
-					printf("\nEnter username: ");
+					printf("\t\t\t\t\tEnter username: ");
 					gets(owner.username);
 					fflush(stdin);
-					printf("Enter password: ");
+					printf("\t\t\t\t\tEnter password: ");
 					
 					gets(owner.password);
 					fflush(stdin);
-					printf("Enter confirmation password: ");
+					printf("\t\t\t\t\tEnter confirmation password: ");
 					gets(ckpass);
 					if(strcmp(ckpass,owner.password)!=0)
 					{
@@ -387,7 +416,7 @@ int main()
 						goto signupmenu1;
 					}
 					fflush(stdin);
-					printf("Enter conntact number: ");
+					printf("\t\t\t\t\tEnter contact number: ");
 					scanf("%lld",&owner.contactnumber);
 					if(owner.contactnumber < 9700000000 || owner.contactnumber > 9899999999)
 					{	
@@ -395,10 +424,10 @@ int main()
 						getch();
 						goto signupmenu1;
 					}	
-					printf("\nEnter esewa number: ");
+					printf("\t\t\t\t\tEnter esewa number: ");
 					scanf("%lld",&owner.esewa_no);
 					fflush(stdin);
-					printf("Enter your passkey (NOTE : REMEMBER TO KEEP THIS SAFE): ");
+					printf("\t\t\t\t\tEnter your passkey (NOTE : REMEMBER TO KEEP THIS SAFE): ");
 					scanf("%d",&owner.passkey);
 		
 					fp=fopen("owner.txt","a");
@@ -416,6 +445,11 @@ int main()
 					fclose(fp);
 					break;
 				
+				case 3:
+					loading();
+					goto menu;
+					
+					
 				default:
 					printf("Invalid input! Please enter input among choices!");
 					fflush(stdin);
@@ -432,10 +466,11 @@ int main()
 			flag=0;
 			system("cls");
 			loggin:
+			printf("\n\n\t\t\t\t\tLOGIN MENU\n\n");
 			printf("----------------------------------------------------------------------------------------------------------------------");
-			printf("\n\n\t\t1.ADMIN\t\t\t2.CUSTOMER\n\n");
+			printf("\n\n\t\t1.ADMIN\t\t\t2.CUSTOMER\t\t\t3.Return\n\n\n\n");
 			printf("----------------------------------------------------------------------------------------------------------------------");
-			printf("\n\t\t\t\t\tEnter your role: ");
+			printf("\n\t\t\t\t\tEnter your choice: ");
 			scanf("%d",&role);
 			switch(role)
 			{
@@ -590,7 +625,8 @@ int main()
 						getch();
 						if(count>3)
 						{
-							printf("\n\nAttempt Limit Reached. Redirecting to password recovery...");
+							printf("\n\nAttempt Limit Reached. Redirecting to password recovery\n");
+							loading();
 							goto there1;
 						}
 						printf("\n\nTry again");
@@ -631,7 +667,10 @@ int main()
         	       	        	        fwrite(&owner, sizeof(struct signup), 1, p);
            	        	        	    printf("\nPassword changed successfully.");
                	        	        	fclose(p);
-	                   	        	    goto end;
+               	        	        	printf("Redirecting\n");
+               	        	        	loading();
+               	        	        	
+	                   	        	    goto menu;
     	                	        }
        	                		}
             	            	printf("\n Incorrect Verifier Code.");
@@ -650,6 +689,10 @@ int main()
 						
 					}
 					break;
+				
+				case 3:
+					loading();
+					goto menu;
 					
 				default:
 					printf("Invalid input! Please enter input among choices!");
@@ -666,9 +709,9 @@ int main()
 			
 			system("cls");			
 			printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
-			printf("\n\t\t\t\t\t\t\t\t\tTHANK YOU FOR YOUR TIME\n");
+			printf("\n\t\t\t\t\t\t\tTHANK YOU FOR YOUR TIME\n");
 			printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
-			getch();
+//			getch();
 			exit(0);
 		
 		default:
@@ -677,18 +720,6 @@ int main()
 			getch();
 			goto menu;			
 	}
-/*	if(role==1)
-	{
-		adminMenu();
-	}
-	if(role==2)
-	{
-		userMenu();
-	}
-	if(role==3)
-	{
-		goto menu;
-	}*/
 	return 0;
 }
 
@@ -697,12 +728,12 @@ int main()
 
 int userMenu()
 {
-	int choice=0;
+	int choice=0,role=2;
 	FILE *fp;
 	usermenu:
 	system("cls");
-	printf("\n\n\t\t\t\t\tWELCOME USER %s\n",users.username);
-	printf("-------MENU----------\n\n\n");
+	printf("\n\n\t\t\t\t\tWELCOME USER %s\n",users.fullname);
+	printf("----------------------------------------------------------------USERMENU-----------------------------------------------------------------\n\n\n");
 	printf("\n\t\t1.Book arena");
 	printf("\n\t\t2.Manage profile");
 	printf("\n\t\t3.Make Feedback");
@@ -718,7 +749,7 @@ int userMenu()
 			break;
 			
 		case 2:
-			manageprofile(&users);
+			manageprofile(&users,role);
 			goto usermenu;
 			break;
 			
@@ -736,13 +767,16 @@ int userMenu()
 		case 4:
 			loading();
 			system("cls");
-			printf("\n----------------------------------------------------------------------------------------------------------------------\n");
-			printf("\n\n\t\tName: ");
+			printf("\n\t\t.......................................\n\t\t.");
+			printf("\n\n\t\t\t\tName: ");
 			puts(users.fullname);
+			printf("\n\t\t.......................................\n\t\t.");		
+			
 			printf("\n\t\tUsername: ");
 			puts(users.username);
-			printf("\n\t\tContact Number: %d",users.contactnumber);
-			printf("\n\n\n----------------------------------------------------------------------------------------------------------------------\n");
+			printf("\n\t\t.......................................\n\t\t.");	
+			printf("\n\t\tContact Number: %lld",users.contactnumber);
+			printf("\n\t\t.......................................\n\t\t.");	
 			getch();
 			goto usermenu;
 			break;
@@ -816,32 +850,27 @@ void bookarena()
 		}
     	
 		p = fopen("bookings.txt", "r");
-    /*	if (p == NULL) 
-		{
-    	    printf("Error opening file!");
-    	    exit(0);
-    	}*/
     	while(fread(&bookck,sizeof(struct booking),1,p)==1)
     	{
     		if(book.date==bookck.date && book.time==bookck.time)
     		{
     			printf(" Given time and date is already booked! Please try again");
     			getch();
-    			goto book1;
+    			goto book1; 
 			}
 		}
 		fclose(p);
-		
 		strcpy(book.username, users.username);
-    	fp = fopen("bookings.txt", "a+");
+    	fp = fopen("bookings.txt", "a");
     	if (fp == NULL) 
 		{
     	    printf("Error opening file!");
     	    exit(0);
     	}
-    	fwrite(&book, sizeof(struct booking), 1, fp);
+    	fwrite(&book,sizeof(struct booking),1,fp);
+		fclose(fp);
 	}
-	fclose(fp);
+	
     total=cnt*1200;
 	printf("Booking successful!\n");
     printf("Your total is %d",total);
