@@ -18,7 +18,7 @@ struct admin{
 	long long int contactnumber;
 
 };
-      
+
 struct booking{
 	int time;
 	int date;
@@ -56,7 +56,10 @@ void loading()
 int logout()
 {
 	system("cls");
+	printf("----------------------------------------------------------------------------------------------------------------------\n");
 	printf("\n\n\t\t\t\tYou have been logout");
+	printf("\n\n\n----------------------------------------------------------------------------------------------------------------------\n");
+
 	getch();
 	main();
 }
@@ -160,6 +163,7 @@ void manageprofile(struct signup *user,int role)
 					fp = fopen("owner.txt", "r+");
     	    	    if (fp == NULL) 
 					{
+						
 	            	    printf("Error opening file!");
     	            	exit(1);
         	    	}
@@ -391,7 +395,19 @@ int main()
 				
 	
 				case 1:
-//		struct signup owner;		
+					fp=fopen("owner.txt","r");	
+					if(fread(&owner,sizeof(struct signup),1,fp)==1)
+					{
+						
+						fclose(fp);
+						loading();
+						system("cls");
+						printf("\n\n--------------------------------------------------------------------------------------------------------------------------------");
+						printf("\n\n\t\t\t\tADMIN ALREADY EXISTS!!");
+						printf("\n\n--------------------------------------------------------------------------------------------------------------------------------");
+						getch();
+						goto menu;
+					}		
 					signupmenu1:
 					system("cls");
 					printf("\n\n\t\t\t\t\tSIGNUP FORM FOR ADMIN\n\n");
@@ -807,36 +823,37 @@ void bookarena()
         printf("Error opening file!");
         exit(0);
     }*/
+	struct booking bookck;
     book:
     system("cls");
     printf("\n\n\t\t\t\t\tBOOKING ARENA\n\n");
     printf("----------------------------------------------------------------------------------------------------------------------\n");
     fflush(stdin); 
 //    fread(&owner,sizeof(struct signup),1,fptr);
-    printf("Enter how many times you want to book: ");
+    printf("\nEnter how many times you want to book: ");
     scanf("%d",&cnt);
     if(cnt>3)
     {
-    	printf("You cannot book more than 3 hours a day");
+    	printf("\n\nYou cannot book more than 3 hours a day");
     	goto book;
 	}
 	if(cnt<1)
 	{
-		printf("Thank you!");
+		printf("\n\t\tThank you!");
 		getch();
 		return;
 	}
     
     for(i=1;i<=cnt;i++)
     {
-    	struct booking bookck;
+    	
     	book1:
-    	printf("Enter date(THIS MONTH) (1-31): ");
+    	printf("\nEnter date(THIS MONTH) (1-31): ");
     	scanf("%d", &book.date);
    		fflush(stdin);
    		if(book.date<1 || book.date>31)
    		{
-   			printf("Please enter days whithin month: ");
+   			printf("\nPlease enter days whithin month: ");
    			getch();
    			goto book;
 		}
@@ -844,7 +861,7 @@ void bookarena()
     	scanf("%d", &book.time);  	
     	if(book.time < 6|| book.time > 22)
     	{
-    		printf("Time not available!");
+    		printf("\n\t\tTime not available!");
     		getch();
     		goto book1;
 		}
@@ -854,7 +871,7 @@ void bookarena()
     	{
     		if(book.date==bookck.date && book.time==bookck.time)
     		{
-    			printf(" Given time and date is already booked! Please try again");
+    			printf(" \n\t\tGiven time and date is already booked! Please try again");
     			getch();
     			goto book1; 
 			}
@@ -872,8 +889,11 @@ void bookarena()
 	}
 	
     total=cnt*1200;
-	printf("Booking successful!\n");
-    printf("Your total is %d",total);
+    loading();
+    printf("\n\n--------------------------------------------------------------------------------------------------------------------------------");
+	printf("\n\t\t\t\tBOOKING SUCCESSFUL!\n");
+    printf("\n\t\t\t\tYour total is %d",total);
+    printf("\n\n--------------------------------------------------------------------------------------------------------------------------------\n\n\t\t\t*");
     getch();
 	
 }
