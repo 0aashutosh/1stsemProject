@@ -125,7 +125,7 @@ void manageprofile(struct signup *user,int role)
 	int choice=0;
     char newpassword[50];
     char ckpass[50];
-    long long int newcontactnumber;
+//    long long int newcontactnumber;
 	struct signup u;
 	 char oldpassword[50];
 	 FILE *fp;
@@ -134,24 +134,15 @@ void manageprofile(struct signup *user,int role)
     printf("\n\n\t\t\t\t\tMANAGE PROFILE\n");
     printf("----------------------------------------------------------------------------------------------------------------------\n");
     printf("\n\t\t1. Change password");
-    printf("\n\t\t2. Update contact number");
-    printf("\n\t\t3. Back to main menu");
+//    printf("\n\t\t2. Update contact number");
+    printf("\n\t\t2. Back to main menu");
     printf("\n\n\n\t\tEnter your choice: ");
     scanf("%d", &choice);
     fflush(stdin);
 
     switch (choice) {
         case 1:
-            printf("\nEnter old password: ");
-            gets(oldpassword);
-            if (strcmp(oldpassword, user->password) != 0) 
-			{
-                printf("\n\nOld password isn't correct");
-                getch();
-                goto profilemenu;
-            }
-            printf("\nEnter new password: ");
-            gets(newpassword);
+            
 			
 			
 			switch(role)//role	1 is for admin and 2 is for user/customer
@@ -180,6 +171,17 @@ void manageprofile(struct signup *user,int role)
             		printf("\n\n\n\t\t\tERROR IN SYSTEM!");
             		exit(0);
 			}
+			menu12:
+			printf("\nEnter old password: ");
+            gets(oldpassword);
+            if (strcmp(oldpassword, user->password) != 0) 
+			{
+                printf("\n\nOld password isn't correct");
+                getch();
+                goto profilemenu;
+            }
+            printf("\nEnter new password: ");
+            gets(newpassword);
             while (fread(&u, sizeof(struct signup), 1, fp) == 1) 
 			{
 			
@@ -191,45 +193,58 @@ void manageprofile(struct signup *user,int role)
                     printf("\nPassword updated successfully!");
                     break;
                 }
+                else
+                {
+                	printf("Username doesnot match!!");
+                	goto profilemenu;
+				}
             }
-
+			rewind(fp);
             fclose(fp);
             break;
+
+//        case 2:
+//
+//            fflush(stdin);
+//            anotherone:
+//            printf("\nEnter old contact number: ");
+//            scanf("%lld", &user->contactnumber);
+//            while(fread(&u, sizeof(struct signup), 1, fp) == 1)
+//            {
+//            	
+//			
+//			if(u.contactnumber==user->contactnumber)
+//				{
+//					printf("\nEnter new contact number: ");
+//					scanf("%lld",&newcontactnumber);
+//					if(newcontactnumber< 9700000000 ||  newcontactnumber> 9899999999)
+//					{
+//						newcontactnumber=0;
+//						printf("\n\n\t\t\t\tContact length is not correct!");
+//						getch();
+//						goto anotherone;
+//					}
+//					u.contactnumber=newcontactnumber;
+//					fp = fopen("users.txt", "a+");
+//       	    		if (fp == NULL) 
+//					{
+//    	            	printf("Error opening file!");
+//        	        	exit(1);
+//        	    	}
+////                    u.contactnumber = user->contactnumber;
+//        		    fseek(fp, -(long)sizeof(struct signup), SEEK_CUR);
+//            		fwrite(&u, sizeof(struct signup), 1, fp);
+//                	printf("\nContact number updated successfully!");
+//					getch();
+//					goto profilemenu;
+//					break;
+//				}
+//			}
+//            
+//            	fclose(fp);
+//            	break;
 
         case 2:
-
-            fflush(stdin);
-            anotherone:
-            printf("\nEnter new contact number: ");
-            scanf("%lld", &user->contactnumber);
-			if(user->contactnumber < 9700000000 || user->contactnumber > 9899999999)
-				{
-					printf("\n\n\t\t\t\tContact length is not correct!");
-					getch();
-					goto anotherone;
-				}
-            fp = fopen("users.txt", "r+");
-            if (fp == NULL) {
-                printf("Error opening file!");
-                exit(1);
-            }
-
-            while (fread(&u, sizeof(struct signup), 1, fp) == 1) 
-			{
-                if (strcmp(u.username, user->username) == 0) 
-				{
-                    u.contactnumber = user->contactnumber;
-                    fseek(fp, -(long)sizeof(struct signup), SEEK_CUR);
-                    fwrite(&u, sizeof(struct signup), 1, fp);
-                    printf("\nContact number updated successfully!");
-                    break;
-                }
-            }
-
-            fclose(fp);
-            break;
-
-        case 3:
             break;
 
         default:
@@ -238,7 +253,7 @@ void manageprofile(struct signup *user,int role)
             goto profilemenu;
     }
 
-    getch();
+//    getch();
 }
 
 int adminMenu()
@@ -252,12 +267,15 @@ int adminMenu()
     printf("\n\t\t1. View All Bookings");
     printf("\n\t\t2. View feedback");
     printf("\n\t\t3. Manage profile");
-    printf("\n\t\t4. Logout");
+    printf("\n\t\t4. View profile");
+    printf("\n\t\t5. Logout");
+    fflush(stdin);
     printf("\n\n\n\t\tEnter your choice: ");
     scanf("%d", &choice);
     fflush(stdin);
 
-    switch (choice) {
+    switch (choice) 
+	{
         case 1:
             view_bookings();
             getch();
@@ -278,6 +296,7 @@ int adminMenu()
             	printf("\n");
             	printf("\n----------------------------------------------------------------------------------------------------------------------\n\n");
 			}
+			printf("\n\nPress any key to continue!");
 			getch();
 			goto ownermenu;
             break;
@@ -286,8 +305,28 @@ int adminMenu()
         	manageprofile(&owner,role);
 			goto ownermenu;
 			break;
+			
+		case 4:
+			loading();
+			system("cls");
+			printf("\n\t\t.......................................\n\t\t.");
+			printf("\n\n\t\t\t\tName: ");
+			puts(owner.fullname);
+			printf("\n\t\t.......................................\n\t\t.");		
+			
+			printf("\n\t\tUsername: ");
+			puts(owner.username);
+			printf("\n\t\t.......................................\n\t\t.");	
+			printf("\n\t\tContact Number: %lld",owner.contactnumber);
+			printf("\n\t\t.......................................\n\t\t.");	
+			printf("\n\t\tEsewa Number: %lld",owner.esewa_no);
+			printf("\n\t\t.......................................\n\t\t.");
+			getch();
+			goto ownermenu;
+			break;
 
-        case 4:
+
+        case 5:
         	loading();
             system("cls");
 			printf("\n\n\t\t\t\tYou have been logout");
@@ -782,6 +821,8 @@ int userMenu()
 			gets(r.report);
 			strcpy(r.name,users.fullname);
 			fwrite(&r,sizeof(struct report),1,fp);
+			printf("\n\n\tReport sent! Press any key to continue!");
+			getch();
 			system("cls");
 			fclose(fp);
 			goto usermenu;
