@@ -2,7 +2,7 @@
 #include<windows.h>
 #include<conio.h>
 #include<string.h>
-
+#include<time.h>
 struct signup{
 	char fullname[50];
 	char username[50];
@@ -20,10 +20,12 @@ struct admin{
 };
 
 struct booking{
-	int time;
+	int year;
+	int month;
 	int date;
+	int hour;
 	char username[50];
-}book;
+}book,bookck;
 
 struct report{
 	char name[50];
@@ -46,11 +48,6 @@ void loading()
 	printf(".");
 	Sleep(500);
 	printf(".");
-	Sleep(500);
-	printf(".");
-	Sleep(500);
-	printf(".");
-	Sleep(500);
 }
 
 int logout()
@@ -63,7 +60,7 @@ int logout()
 	getch();
 	main();
 }
-void view_bookings() {
+void view_bookings(){
     FILE *fp;
     struct booking b;
     system("cls");
@@ -81,8 +78,8 @@ void view_bookings() {
     while (fread(&b, sizeof(struct booking), 1, fp) == 1) 
 	{
         printf("Username: %s\n", b.username);
-        printf("Date: %02d\n", b.date);
-        printf("Time: %02d\n", b.time);
+//        printf("Date: %02d\n", b.hour);
+        printf("DATE: %d-%02d-%02d\nTIME: %02d:00\n", b.year,b.month,b.hour,b.hour);
         printf("----------------------------------------------------------------------------------------------------------------------\n");
     }
 
@@ -157,7 +154,7 @@ void manageprofile(struct signup *user,int role)
             gets(newpassword);
 			
 			
-			switch(role)
+			switch(role)//role	1 is for admin and 2 is for user/customer
 			{
 				case 1:
 					fp = fopen("owner.txt", "r+");
@@ -253,7 +250,7 @@ int adminMenu()
     printf("\n\n\t\t\t\t\tWELCOME OWNER\n");
     printf("----------------------------------------------------------------------------------------------------------------------\n");
     printf("\n\t\t1. View All Bookings");
-    printf("\n\t\t2. View report");
+    printf("\n\t\t2. View feedback");
     printf("\n\t\t3. Manage profile");
     printf("\n\t\t4. Logout");
     printf("\n\n\n\t\tEnter your choice: ");
@@ -273,7 +270,7 @@ int adminMenu()
             printf("\n\t\t\t\t\tUSER REPORTS");
             printf("\n----------------------------------------------------------------------------------------------------------------------\n");
             while(fread(&r,sizeof(struct report),1,fp)==1)
-            {
+            { 
             	printf("\n");
             	puts(r.name);
             	printf("\n");
@@ -338,6 +335,7 @@ int main()
 			printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
 			printf("\n\n\t\t\t1.ADMIN\t\t\t2.CUSTOMER\t\t\t3.Return\n\n\n\n");
 			printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
+			fflush(stdin);
 			printf("\n\t\t\t\t\t\tEnter your choice: ");
 			scanf("%d",&role);
 			switch(role)
@@ -368,7 +366,7 @@ int main()
 						goto signupmenu;
 					}
 					fflush(stdin);
-					printf("\t\t\t\t\tEnter contact number: %d",users.contactnumber);
+					printf("\t\t\t\t\tEnter contact number: ");
 					scanf("%lld",&users.contactnumber);
 					if(users.contactnumber < 9700000000 || users.contactnumber > 9899999999)
 					{
@@ -388,8 +386,11 @@ int main()
 						exit(0);
 					}
 					fwrite(&users,sizeof(struct signup),1,fp);
-					printf("\n\n--------------------------------------------------------------------------------------------------------------------------------");
-					printf("\n\n\t\t\t\tSignup sucessfull: ");
+					printf("----------------------------------------------------------------------------------------------------------------------");
+		
+					printf("\n\n\n\t\t\tSignup sucessfull\t\t\t\n\n\n ");
+					printf("----------------------------------------------------------------------------------------------------------------------");
+					getch();
 					fclose(fp);
 					break;
 				
@@ -486,6 +487,7 @@ int main()
 			printf("----------------------------------------------------------------------------------------------------------------------");
 			printf("\n\n\t\t1.ADMIN\t\t\t2.CUSTOMER\t\t\t3.Return\n\n\n\n");
 			printf("----------------------------------------------------------------------------------------------------------------------");
+			fflush(stdin);
 			printf("\n\t\t\t\t\tEnter your choice: ");
 			scanf("%d",&role);
 			switch(role)
@@ -533,7 +535,7 @@ int main()
 					if(!flag)
 					{
 						count++;
-						printf("Incorrect password   %d",count);
+						printf("Incorrect password  ");
 						getch();
 						if(count>3)
 						{
@@ -558,7 +560,7 @@ int main()
 							case 1:
 								printf("Enter passkey: ");
 								scanf("%d",&key);
-								fflush(stdin);
+						 		fflush(stdin);
 								printf("\nEnter username: ");
 								gets(ckusername);
 								p = fopen("users.txt", "r+");
@@ -746,6 +748,8 @@ int userMenu()
 {
 	int choice=0,role=2;
 	FILE *fp;
+	FILE *f;
+	struct booking b1;
 	usermenu:
 	system("cls");
 	printf("\n\n\t\t\t\t\tWELCOME USER %s\n",users.fullname);
@@ -754,7 +758,9 @@ int userMenu()
 	printf("\n\t\t2.Manage profile");
 	printf("\n\t\t3.Make Feedback");
 	printf("\n\t\t4.View profile info");
-	printf("\n\t\t5.Logout");
+	printf("\n\t\t5.View my booking");	
+	printf("\n\t\t6.Logout");
+	fflush(stdin);
 	printf("\n\n\n\t\tEnter your choice: ");
 	scanf("%d",&choice);
 	switch(choice)
@@ -798,6 +804,28 @@ int userMenu()
 			break;
 			
 		case 5:
+			f= fopen("bookings.txt", "r+");
+			system("cls");
+		    printf("\n\n\t\t\t\t\tVIEW BOOKINGS\n\n");
+    		printf("----------------------------------------------------------------------------------------------------------------------\n");
+    		
+			while(fread(&b1,sizeof(struct booking),1, f) == 1) 
+			{
+				if(strcmp(b1.username,users.username)==0)
+				{
+					printf("Username: %s\n", b1.username);
+//        printf("Date: %02d\n", b.hour);
+        			printf("Time: %d-%02d-%02d %02d:00", b1.year,b1.month,b1.date,b1.hour);
+        			printf("\n----------------------------------------------------------------------------------------------------------------------\n");
+	    		}
+			}
+
+	        fclose(f);
+    		getch();
+    		goto usermenu;
+    		break;
+    		
+		case 6:
 			loading();
 			system("cls");
 			printf("\n\n\t\t\t\tYou have been logout");
@@ -817,83 +845,69 @@ void bookarena()
 	FILE *fp;
  	FILE *fptr;
  	FILE *p;//to check time and date of booking !
-	int cnt=0,i=0,total=0;
-	/*fptr = fopen("owner.txt", "r");
-    if (fptr == NULL) {
-        printf("Error opening file!");
-        exit(0);
-    }*/
-	struct booking bookck;
+	int i=0,total=0;
+    time_t t= time(NULL);
+	struct tm tm = *localtime(&t);	
     book:
     system("cls");
     printf("\n\n\t\t\t\t\tBOOKING ARENA\n\n");
+    printf("\nDATE: %d-%02d-%02d\nTIME: %02d:%2d\n",tm.tm_year+1900,tm.tm_mon,tm.tm_mday,tm.tm_hour,tm.tm_min);
     printf("----------------------------------------------------------------------------------------------------------------------\n");
-    fflush(stdin); 
-//    fread(&owner,sizeof(struct signup),1,fptr);
-    printf("\nEnter how many times you want to book: ");
-    scanf("%d",&cnt);
-    if(cnt>3)
-    {
-    	printf("\n\nYou cannot book more than 3 hours a day");
-    	goto book;
-	}
-	if(cnt<1)
+    fflush(stdin); 	
+    book1:
+    printf("\nEnter MONTH(1-12): ");
+	scanf("%d", &book.month);
+	fflush(stdin);
+	if( book.month<tm.tm_mon|| book.month >12)
 	{
-		printf("\n\t\tThank you!");
-		getch();
-		return;
-	}
-    
-    for(i=1;i<=cnt;i++)
-    {
-    	
-    	book1:
-    	printf("\nEnter date(THIS MONTH) (1-31): ");
-    	scanf("%d", &book.date);
-   		fflush(stdin);
-   		if(book.date<1 || book.date>31)
-   		{
-   			printf("\nPlease enter days whithin month: ");
-   			getch();
-   			goto book;
-		}
-   		printf("Enter time (6-22): ");
-    	scanf("%d", &book.time);  	
-    	if(book.time < 6|| book.time > 22)
-    	{
-    		printf("\n\t\tTime not available!");
-    		getch();
-    		goto book1;
-		}
-    	
-		p = fopen("bookings.txt", "r");
-    	while(fread(&bookck,sizeof(struct booking),1,p)==1)
-    	{
-    		if(book.date==bookck.date && book.time==bookck.time)
-    		{
-    			printf(" \n\t\tGiven time and date is already booked! Please try again");
-    			getch();
-    			goto book1; 
-			}
-		}
-		fclose(p);
-		strcpy(book.username, users.username);
-    	fp = fopen("bookings.txt", "a");
-    	if (fp == NULL) 
-		{
-    	    printf("Error opening file!");
-    	    exit(0);
-    	}
-    	fwrite(&book,sizeof(struct booking),1,fp);
-		fclose(fp);
-	}
 	
-    total=cnt*1200;
-    loading();
+    	printf("\nPlease enter valid date!");
+    	getch();
+    	goto book1;
+	}
+	printf("Enter date(1-31): ");
+    scanf("%d", &book.date);  	
+	if(book.date<1 || book.date>31)
+	{
+   		printf("\nPlease enter valid date: ");
+   		getch();
+   		system("cls");
+   		goto book;
+	}
+	printf("Enter time(6-22): ");
+    scanf("%d", &book.hour);  	  	
+   	if(book.hour<6 || book.hour>22)
+   	{
+   		printf("\nTime is not available!!");
+   		getch();
+   		goto book;
+	}
+	book.year=tm.tm_year+1900;
+	p = fopen("bookings.txt", "r");
+    while(fread(&bookck,sizeof(struct booking),1,p)==1)
+    {
+    	if(book.hour==bookck.hour && book.month==bookck.month && book.date==bookck.date)
+    	{
+    		printf(" \n\t\tGiven time and date is already booked! Please try again");
+    		getch();
+    		goto book1; 
+		}
+	}
+	fclose(p);
+	strcpy(book.username, users.username);
+    fp = fopen("bookings.txt", "a");
+    if (fp == NULL) 
+	{
+    	printf("Error opening file!");
+    	exit(0);
+    }
+    fwrite(&book,sizeof(struct booking),1,fp);
+	fclose(fp);
+    total=1200;
     printf("\n\n--------------------------------------------------------------------------------------------------------------------------------");
 	printf("\n\t\t\t\tBOOKING SUCCESSFUL!\n");
     printf("\n\t\t\t\tYour total is %d",total);
-    printf("\n\n--------------------------------------------------------------------------------------------------------------------------------\n\n\t\t\t*");
+    printf("\n\n--------------------------------------------------------------------------------------------------------------------------------\n\n\t\t\t");
     getch();
 	
 }
