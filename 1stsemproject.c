@@ -86,39 +86,7 @@ void view_bookings(){
     fclose(fp);
     getch();
 }
-void updatefile(struct signup *user)
-{
-	char name[10],tname[10];
-//	name[10]='users.txt';
-//	tname[10]='temp.txt';
-	FILE *fp, *fp_temp;
-    struct signup u;
 
-    fp = fopen("users.txt", "r");
-    fp_temp = fopen("temp.txt", "w");
-
-    if (fp == NULL || fp_temp == NULL) {
-        printf("Error opening file!\n");
-        exit(1);
-    }
-
-    while (fread(&u, sizeof(struct signup), 1, fp) == 1) {
-        if (strcmp(u.username, user->username) == 0) 
-		{
-            fwrite(user, sizeof(struct signup), 1, fp_temp);
-        }
-		 else 
-		{
-            fwrite(&u, sizeof(struct signup), 1, fp_temp);
-        }
-    }
-
-    fclose(fp);
-    fclose(fp_temp);
-
-    remove(name);
-    rename(tname, name);
-}
 
 void manageprofile(struct signup *user,int role)
 {
@@ -278,7 +246,6 @@ int adminMenu()
 	{
         case 1:
             view_bookings();
-            getch();
             goto ownermenu;
             break;
 
@@ -575,13 +542,14 @@ int main()
 					{
 						count++;
 						printf("Incorrect password  ");
-						getch();
+						
 						if(count>3)
 						{
-							printf("\n\nAttempt Limit Reached. Redirecting to password recovery...");
+							printf("\n\nAttempt Limit Reached. Redirecting to password recovery...\n");
 							goto there;
 						}
 						printf("\n\nTry again");
+						getch();
 						system("cls");
 						rewind(ptr);
 						goto main2;
@@ -620,15 +588,20 @@ int main()
         	        	                fwrite(&users, sizeof(struct signup), 1, p);
             	        	            printf("\nPassword changed successfully.");
                 	        	        fclose(p);
-                    	        	    goto end;
+                	        	        system("cls");
+                    	        	    goto loggin;
     	                	        }
                         		}
-                        		printf("\n Incorrect Verifier Code.");
+                        		printf("\n Incorrect Passkey");
         	             		fclose(p);
-            	        	    exit(0);
+            	        	    goto menu;
             	        	    
             	        	case 2:
-            	        		printf("\n Ok BYE BYE");
+            	        		system("cls");
+            	        		printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
+								printf("\n\t\t\t\t\t\t\tTHANK YOU FOR YOUR TIME\n");
+								printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
+
                         		exit(0);
                         		
                         	default:
@@ -736,7 +709,10 @@ int main()
             	       		    break;
             	        		
             	       		case 2:
-            	       			printf("\n Ok BYE BYE");
+            	       			system("cls");
+            	        		printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
+								printf("\n\t\t\t\t\t\t\tTHANK YOU FOR YOUR TIME\n");
+								printf("\t--------------------------------------------------------------------------------------------------------------------------------------");
                        			exit(0);
                         		
                        		default:
@@ -886,14 +862,17 @@ void bookarena()
 	FILE *fp;
  	FILE *fptr;
  	FILE *p;//to check time and date of booking !
+ 	FILE *ptr;
 	int i=0,total=0;
+	struct signup esewa;
     time_t t= time(NULL);
 	struct tm tm = *localtime(&t);	
     book:
     system("cls");
     printf("\n\n\t\t\t\t\tBOOKING ARENA\n\n");
     printf("\nDATE: %d-%02d-%02d\nTIME: %02d:%2d\n",tm.tm_year+1900,tm.tm_mon,tm.tm_mday,tm.tm_hour,tm.tm_min);
-    printf("----------------------------------------------------------------------------------------------------------------------\n");
+    printf("\n\n(DISCLAIMER: The time '6-22' is 24 hour format\tThe booking rate is  Rs.1200 per booking)\n(Our system cannot book between hours line '6:30'. It will break the consistency of time availability)");
+    printf("\n----------------------------------------------------------------------------------------------------------------------\n");
     fflush(stdin); 	
     book1:
     printf("\nEnter MONTH(1-12): ");
@@ -904,14 +883,13 @@ void bookarena()
 	
     	printf("\nPlease enter valid date!");
     	getch();
-    	goto book1;
+    	goto book;
 	}
 	printf("Enter date(1-31): ");
     scanf("%d", &book.date);  	
 	if(book.date<1 || book.date>31)
 	{
    		printf("\nPlease enter valid date: ");
-   		getch();
    		system("cls");
    		goto book;
 	}
@@ -945,11 +923,14 @@ void bookarena()
     fwrite(&book,sizeof(struct booking),1,fp);
 	fclose(fp);
     total=1200;
+    ptr = fopen("owner.txt", "r+");
+    fread(&esewa,sizeof(struct signup),1,ptr);
     printf("\n\n--------------------------------------------------------------------------------------------------------------------------------");
 	printf("\n\t\t\t\tBOOKING SUCCESSFUL!\n");
     printf("\n\t\t\t\tYour total is %d",total);
     printf("\n\n--------------------------------------------------------------------------------------------------------------------------------\n\n\t\t\t");
-    getch();
+    printf("(*Pay this in thisEsewa number=%lld)",esewa.esewa_no);
+	getch();
 	
 }
 
